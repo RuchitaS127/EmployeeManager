@@ -1,0 +1,10 @@
+# Ignore build and debug folders
+bin/
+obj/
+*.user
+*.suo
+*.log
+*.pdb
+*.db
+.vscode/
+.env
