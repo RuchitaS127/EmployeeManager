@@ -47,10 +47,10 @@ namespace EmployeeService.Repos
                 Employee emp = new Employee
                 {
                     Id = Convert.ToInt32(reader["Id"]),
-                    FirstName = reader["FirstName"]!=null ? reader["FirstName"].ToString() : string.Empty,
-                    LastName = reader["LastName"]!=null ? reader["LastName"].ToString() : string.Empty,
-                    Gender = reader["Gender"]!=null ? reader["Gender"].ToString() : string.Empty,
-                    Email = reader["Email"]!=null ? reader["Email"].ToString() : string.Empty
+                    FirstName = reader["FirstName"] != null ? reader["FirstName"].ToString() : string.Empty,
+                    LastName = reader["LastName"] != null ? reader["LastName"].ToString() : string.Empty,
+                    Gender = reader["Gender"] != null ? reader["Gender"].ToString() : string.Empty,
+                    Email = reader["Email"] != null ? reader["Email"].ToString() : string.Empty
                 };
                 employees.Add(emp);
             }
@@ -89,6 +89,11 @@ namespace EmployeeService.Repos
             await connection.OpenAsync();
             int rowsAffected = await command.ExecuteNonQueryAsync();
             return rowsAffected > 0;
+        }
+
+        public async Task<bool> RestoreEmployee(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

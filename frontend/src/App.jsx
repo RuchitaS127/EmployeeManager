@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Container, Typography, Box } from "@mui/material";
-import EmployeeForm from "./components/EmployeeForm";
-import EmployeeList from "./components/EmployeeList";
+import React, { useEffect, useState } from 'react';
+import { Container, Typography, Box } from '@mui/material';
+import EmployeeForm from './components/EmployeeForm';
+import EmployeeList from './components/EmployeeList';
 import {
   getAllEmployees,
   createEmployee,
   updateEmployee,
   deleteEmployee,
-} from "./services/EmployeeService.js";
+  restoreEmployee,
+} from './services/EmployeeService.js';
 
 const App = () => {
   const [employees, setEmployees] = useState([]);
@@ -18,7 +19,7 @@ const App = () => {
       const response = await getAllEmployees();
       setEmployees(response.data);
     } catch (error) {
-      console.error("Failed to fetch employees", error);
+      console.error('Failed to fetch employees', error);
     }
   };
 
@@ -36,7 +37,7 @@ const App = () => {
       setEditingEmployee(null);
       loadEmployees();
     } catch (error) {
-      console.error("Failed to save employee", error);
+      console.error('Failed to save employee', error);
     }
   };
 
@@ -49,7 +50,15 @@ const App = () => {
       await deleteEmployee(id);
       loadEmployees();
     } catch (error) {
-      console.error("Failed to delete employee", error);
+      console.error('Failed to delete employee', error);
+    }
+  };
+  const handleRestore = async (id) => {
+    try {
+      await restoreEmployee(id);
+      loadEmployees();
+    } catch (error) {
+      console.error('Failed to restore employee', error);
     }
   };
 
@@ -66,6 +75,7 @@ const App = () => {
           employees={employees}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onRestore={handleRestore}
         />
       </Box>
     </Container>

@@ -16,6 +16,7 @@ namespace EmployeeService.Services
         Task<List<Employee>> GetAllEmployees();
         Task<bool> UpdateEmployee(Employee employee);
         Task<bool> DeleteEmployee(int id);
+        Task<bool> RestoreEmployee(int id);
     }
 
     public class EmployeeServiceWithEF : IEmployeeService
@@ -34,6 +35,7 @@ namespace EmployeeService.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
 
         // READ
         public async Task<List<Employee>> GetAllEmployees()
@@ -57,6 +59,18 @@ namespace EmployeeService.Services
             if (employee != null)
             {
                 employee.Deleted = true; // Soft delete
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> RestoreEmployee(int id)
+        {
+            var employee = await _context.Employees.Where(x => x.Id == id).FirstOrDefaultAsync();
+            if (employee != null)
+            {
+                employee.Deleted = false; // Soft delete
                 await _context.SaveChangesAsync();
                 return true;
             }
