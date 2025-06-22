@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using EmployeeService.Data;
 using EmployeeService.Models;
 using EmployeeService.Repos;
+using EmployeeService.Services;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -46,7 +47,7 @@ public class EmployeesController : ControllerBase
         _context.Entry(employee).State = EntityState.Modified;
         _context.SaveChanges();
 
-        EmployeeRepository empRepo = new EmployeeRepository();
+        var empRepo = new EmployeeServiceWithEF(_context);
         await empRepo.UpdateEmployee(employee);
         return NoContent();
     }
@@ -59,7 +60,7 @@ public class EmployeesController : ControllerBase
         // employee.Deleted = true;
         // await _context.SaveChangesAsync();
 
-        EmployeeRepository empRepo = new EmployeeRepository();
+        var empRepo = new EmployeeServiceWithEF(_context);
         var result = await empRepo.DeleteEmployee(id);
         if (result)
         {
