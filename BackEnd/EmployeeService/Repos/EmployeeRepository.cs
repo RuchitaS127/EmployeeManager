@@ -4,21 +4,20 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using EmployeeService.Models;
 using System.Threading.Tasks;
+using EmployeeService.Services;
 
 namespace EmployeeService.Repos
 {
-    public class EmployeeRepository
+    public class EmployeeRepository : IEmployeeService
     {
         private static readonly string _connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=EmployeeDB;Trusted_Connection=True;";
-        // private static readonly string _connectionString = "Data Source=.;Initial Catalog=EmployeeDB;Integrated Security=True;";
 
         public EmployeeRepository()
         {
-            // _connectionString = connectionString;
         }
 
         // CREATE
-        public void AddEmployee(Employee employee)
+        public async Task<bool> AddEmployee(Employee employee)
         {
             using SqlConnection connection = new SqlConnection(_connectionString);
             const string query = @"INSERT INTO Employee (FirstName, LastName, Gender, Email) 
@@ -29,12 +28,12 @@ namespace EmployeeService.Repos
             command.Parameters.Add("@Gender", SqlDbType.NVarChar).Value = employee.Gender;
             command.Parameters.Add("@Email", SqlDbType.NVarChar).Value = employee.Email;
 
-            connection.Open();
-            command.ExecuteNonQuery();
+            int rowsAffected = await command.ExecuteNonQueryAsync();
+            return rowsAffected > 0;
         }
 
         // READ
-        public List<Employee> GetAllEmployees()
+        public async Task<List<Employee>> GetAllEmployees()
         {
             List<Employee> employees = new List<Employee>();
             using SqlConnection connection = new SqlConnection(_connectionString);
@@ -42,7 +41,7 @@ namespace EmployeeService.Repos
             using SqlCommand command = new SqlCommand(query, connection);
             connection.Open();
 
-            using SqlDataReader reader = command.ExecuteReader();
+            using SqlDataReader reader = await command.ExecuteReaderAsync();
             while (reader.Read())
             {
                 Employee emp = new Employee

@@ -10,10 +10,12 @@ using EmployeeService.Services;
 public class EmployeesController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IEmployeeService _empService;
 
-    public EmployeesController(AppDbContext context)
+    public EmployeesController(AppDbContext context, IEmployeeService empService)
     {
         _context = context;
+        _empService = empService;
     }
 
     [HttpGet]
@@ -44,11 +46,11 @@ public class EmployeesController : ControllerBase
     {
         if (id != employee.Id) return BadRequest();
 
-        _context.Entry(employee).State = EntityState.Modified;
-        _context.SaveChanges();
+        // _context.Entry(employee).State = EntityState.Modified;
+        // _context.SaveChanges();
 
-        var empRepo = new EmployeeServiceWithEF(_context);
-        await empRepo.UpdateEmployee(employee);
+        // var empRepo = new EmployeeServiceWithEF(_context);
+        await _empService.UpdateEmployee(employee);
         return NoContent();
     }
 
@@ -60,8 +62,8 @@ public class EmployeesController : ControllerBase
         // employee.Deleted = true;
         // await _context.SaveChangesAsync();
 
-        var empRepo = new EmployeeServiceWithEF(_context);
-        var result = await empRepo.DeleteEmployee(id);
+        // var empRepo = new EmployeeServiceWithEF(_context);
+        var result = await _empService.DeleteEmployee(id);
         if (result)
         {
             return NoContent();

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using EmployeeService.Data;
+using EmployeeService.Services;
+using EmployeeService.Repos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();// ✅ Add CORS
+builder.Services.AddControllers();
+
+builder.Services.AddScoped<IEmployeeService, EmployeeServiceWithEF>();
+// builder.Services.AddScoped<IEmployeeService, EmployeeRepository>();
 
 builder.Services.AddCors(options =>
 {
