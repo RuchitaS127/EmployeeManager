@@ -20,7 +20,7 @@ namespace EmployeeService.Repos
         public async Task<bool> AddEmployee(Employee employee)
         {
             using SqlConnection connection = new SqlConnection(_connectionString);
-            const string query = @"INSERT INTO Employee (FirstName, LastName, Gender, Email) 
+            const string query = @"INSERT INTO [dbo].[Employees] (FirstName, LastName, Gender, Email) 
                                    VALUES (@FirstName, @LastName, @Gender, @Email)";
             using SqlCommand command = new SqlCommand(query, connection);
             command.Parameters.Add("@FirstName", SqlDbType.NVarChar).Value = employee.FirstName;
@@ -37,7 +37,7 @@ namespace EmployeeService.Repos
         {
             List<Employee> employees = new List<Employee>();
             using SqlConnection connection = new SqlConnection(_connectionString);
-            const string query = "SELECT * FROM Employee";
+            const string query = "SELECT * FROM [dbo].[Employees] ";
             using SqlCommand command = new SqlCommand(query, connection);
             connection.Open();
 
@@ -82,7 +82,7 @@ namespace EmployeeService.Repos
         public async Task<bool> DeleteEmployee(int id)
         {
             using SqlConnection connection = new SqlConnection(_connectionString);
-            const string query = "DELETE FROM Employee WHERE Id = @Id";
+            const string query = "DELETE FROM [dbo].[Employees]  WHERE Id = @Id";
             using SqlCommand command = new SqlCommand(query, connection);
             command.Parameters.Add("@Id", SqlDbType.Int).Value = id;
 
