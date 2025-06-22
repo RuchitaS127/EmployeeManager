@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EmployeeService.Data;
 using EmployeeService.Models;
+using EmployeeService.Repos;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -24,8 +25,9 @@ public class EmployeesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Employee>> GetById(int id)
     {
-        var employee = await _context.Employees.FindAsync(id);
-        return employee == null || employee.Deleted ? NotFound() : employee;
+        // var employee = await _context.Employees.FindAsync(id);
+        var employee = await _context.Employees.Where(x=>x.Id==id).FirstOrDefaultAsync();
+        return employee == null || employee.Deleted ? NotFound() :  Ok(employee);
     }
 
     [HttpPost]
@@ -40,18 +42,29 @@ public class EmployeesController : ControllerBase
     public async Task<IActionResult> Update(int id, Employee employee)
     {
         if (id != employee.Id) return BadRequest();
+
         _context.Entry(employee).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        _context.SaveChanges();
+
+        EmployeeRepository empRepo = new EmployeeRepository();
+        await empRepo.UpdateEmployee(employee);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var employee = await _context.Employees.FindAsync(id);
-        if (employee == null) return NotFound();
-        employee.Deleted = true;
-        await _context.SaveChangesAsync();
-        return NoContent();
+        // var employee = await _context.Employees.FindAsync(id);
+        // if (employee == null) return NotFound();
+        // employee.Deleted = true;
+        // await _context.SaveChangesAsync();
+
+        EmployeeRepository empRepo = new EmployeeRepository();
+        var result = await empRepo.DeleteEmployee(id);
+        if (result)
+        {
+            return NoContent();
+        }
+        return NotFound();
     }
 }
